@@ -82,7 +82,7 @@ root       452  0.0  0.6   9392  3024 ?        SN   05:10   0:00 ncat -k -l 6001
 Configure the instrument serial port (default is 9600-8-n-1).  Unforunately the DTR/DSR flow control method is unsupported, so we have to be careful when 
 sending commands to avoid overflowing the buffers.
 
-## Remote
+## Usage
 
 On the remote computer, use pyvisa to access the instrument.  See example.py for a simple script to query the instrument.  You'll need to edit the IP address in the file to match your Raspberry Pi.
 
