@@ -84,7 +84,7 @@ sending commands to avoid overflowing the buffers.
 
 ## Remote
 
-On the remote computer, use pyvisa to access the instrument.  See example.py for a simple script to query the instrument.
+On the remote computer, use pyvisa to access the instrument.  See example.py for a simple script to query the instrument.  You'll need to edit the IP address in the file to match your Raspberry Pi.
 
 ```
 $  python example.py
