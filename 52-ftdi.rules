@@ -1,0 +1,15 @@
+# Create symlink for every FTDI device.
+SUBSYSTEMS=="usb", KERNEL=="ttyUSB[0-9]*", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", SYMLINK+="ftdi_%s{serial}"
+
+# Use named /dev/ nodes for the power supplies.
+# When power supply USB serial ports are plugged in, run a script that starts a
+# socket server to redirect serial over TCP/IP.  We cannot run a long running
+# process (or one that has network access) directly from udev, so work around
+# this by using 'at'. It's much easier than the systemd method. 
+# Prerequisite: sudo apt-get install at
+# 
+# Note that these are keyed to specific FTDI serial numbers, ATTRS{serial}.
+# Change these as needed to match your hardware.
+SUBSYSTEMS=="usb", KERNEL=="ttyUSB[0-9]*", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="FTXQI63U", SYMLINK+="power_supply_e3632a", RUN+="/bin/sh -c 'echo /bin/start_visa_redirect.sh /dev/power_supply_e3632a 6000 |/usr/bin/at now'"
+SUBSYSTEMS=="usb", KERNEL=="ttyUSB[0-9]*", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="FT47WIHR", SYMLINK+="power_supply_e3631a", RUN+="/bin/sh -c 'echo /bin/start_visa_redirect.sh /dev/power_supply_e3631a 6001 |/usr/bin/at now'"
+
