@@ -5,7 +5,7 @@ Make old instruments with RS-232 SCPI ports accessible over the network.
 Some old instruments, like the Agilent E36xxA family of power supplies, have only RS-232 and GPIB ports for remote control. 
 They lack LAN ports for TCP/IP remote control. Use a RaspberryPi or similar SBC as an RS-232 to TCP/IP bridge to make these 
 devices accessible over the network.  This method tunnels all the traffic over a TCP socket. pyvisa can then connect to them using 
-the :SOCKET protocol, such as:
+the ```:SOCKET``` protocol, such as:
                                                                                 
 ```                                                                             
 TCPIP0::192.168.2.238::6000::SOCKET                                             
@@ -28,8 +28,8 @@ Install prerequisites:
 sudo apt-get install at ncat
 ```
  
-Plug in the FTDI USB serial ports. Do this one at a time and identify the serial numbers, such as FTXQI63U. 
-Make note of these serial numbers and which instruments they are connected to. Connect RS-232 cables to the instruments. 
+Plug in the FTDI USB serial ports. Do this one at a time and identify the serial numbers, such as FTXQI63U shown below. 
+Make note of these serial numbers and which instruments they will connect to. Connect RS-232 cables to the instruments. 
 You might possibly need NULL modem cables.
 
 ```
@@ -41,6 +41,14 @@ $ sudo dmesg |grep -E 'FTDI|SerialNumber'
 [   26.170823] usb 1-1.2: FTDI USB Serial Device converter now attached to ttyUSB0
 ```
 
+On some systems, serial-getty may automatically be started for serial ports.  If a new getty process is started after 
+plugging in the serial port, you will need to disable that behaviour.  Something like this may be needed:
+
+```
+sudo systemctl stop serial-getty@ttyUSB0
+sudo systemctl disable serial-getty@ttyUSB0
+```
+
 Install these files on RaspberryPi.                                                    
                                                                                 
 ```                                                                             
@@ -49,17 +57,17 @@ $ sudo cp 52-ftdi.rules /etc/udev/rules.d/
 $ sudo chmod +x /bin/start_visa_redirect.sh                                                                                                                                                                                                                                                 
 ```    
 
-Edit /etc/udev/rules.d/52-ftdi.rules:
-- Change the ATTR{serial} numbers to match the serial numbers of your USB devices. 
-- Change the SYMLINK and RUN names to something relevant for your equipment. 
+Edit ```/etc/udev/rules.d/52-ftdi.rules```:
+- Change the ```ATTR{serial}``` numbers to match the serial numbers of your USB devices. 
+- Change the ```SYMLINK``` and ```RUN``` names to something relevant for your equipment. 
 - If you want, change the TCP/IP ports from the default 6000 and 6001 to something else.
 
-If your instrument uses something other than 9600-8-n-1, edit start_visa_redirect.sh and change the baud rate in the stty commmand.
+If your instrument uses something other than 9600-8-n-1, edit ```start_visa_redirect.sh``` and change the baud rate in the stty commmand.
 
 Refresh the udev daemon:
 
 ```
-$ sudo udevadm control --reload-rules && udevadm trigger
+$ sudo udevadm control --reload-rules && sudo udevadm trigger
 ```
 
 The scripts should now start running.  They will log a message to syslog when starting:
